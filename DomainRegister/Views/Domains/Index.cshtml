@@ -1,0 +1,51 @@
+﻿@model IEnumerable<DomainRegister.Models.Domain>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Handler.HandlerName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Company)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DomainName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RenewalDate)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Handler.HandlerName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Company)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DomainName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RenewalDate)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.DomainId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.DomainId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.DomainId })
+        </td>
+    </tr>
+}
+
+</table>
