@@ -24,7 +24,7 @@ namespace DomainRegisterMailer
         void DoMail(IMailer mailer)
         {
             List<DomainRenewalViewModel> domainsToBeRenewed = new List<DomainRenewalViewModel>();
-            DateTime NintyDays = DateTime.Now.AddDays(90);
+            DateTime NintyDays = DateTime.Now.AddDays(60);
             using (var ctx = new DomainRegisterContext())
             {
                 domainsToBeRenewed = ctx.Domains
