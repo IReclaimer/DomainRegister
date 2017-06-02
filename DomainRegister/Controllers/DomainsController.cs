@@ -18,7 +18,7 @@ namespace DomainRegister.Controllers
         // GET: Domains
         public async Task<ActionResult> Index()
         {
-            var domains = db.Domains.Include(d => d.Handler);
+            var domains = db.Domains.Include(d => d.Company);
             return View(await domains.ToListAsync());
         }
 
@@ -40,7 +40,7 @@ namespace DomainRegister.Controllers
         // GET: Domains/Create
         public ActionResult Create()
         {
-            ViewBag.HandlerId = new SelectList(db.Handlers, "HandlerId", "HandlerName");
+            ViewBag.CompanyId = new SelectList(db.Companies, "CompanyId", "CompanyName");
             return View();
         }
 
@@ -49,7 +49,7 @@ namespace DomainRegister.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "DomainId,Company,DomainName,RenewalDate,HandlerId")] Domain domain)
+        public async Task<ActionResult> Create([Bind(Include = "DomainId,DomainName,RenewalDate,CompanyId")] Domain domain)
         {
             if (ModelState.IsValid)
             {
@@ -58,7 +58,7 @@ namespace DomainRegister.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.HandlerId = new SelectList(db.Handlers, "HandlerId", "HandlerName", domain.HandlerId);
+            ViewBag.CompanyId = new SelectList(db.Companies, "CompanyId", "CompanyName", domain.CompanyId);
             return View(domain);
         }
 
@@ -74,7 +74,7 @@ namespace DomainRegister.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.HandlerId = new SelectList(db.Handlers, "HandlerId", "HandlerName", domain.HandlerId);
+            ViewBag.CompanyId = new SelectList(db.Companies, "CompanyId", "CompanyName", domain.CompanyId);
             return View(domain);
         }
 
@@ -83,7 +83,7 @@ namespace DomainRegister.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "DomainId,Company,DomainName,RenewalDate,HandlerId")] Domain domain)
+        public async Task<ActionResult> Edit([Bind(Include = "DomainId,DomainName,RenewalDate,CompanyId")] Domain domain)
         {
             if (ModelState.IsValid)
             {
@@ -91,7 +91,7 @@ namespace DomainRegister.Controllers
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.HandlerId = new SelectList(db.Handlers, "HandlerId", "HandlerName", domain.HandlerId);
+            ViewBag.CompanyId = new SelectList(db.Companies, "CompanyId", "CompanyName", domain.CompanyId);
             return View(domain);
         }
 

@@ -11,107 +11,112 @@ using DomainRegister.Models;
 
 namespace DomainRegister.Controllers
 {
-    public class HandlersController : Controller
+    public class CompaniesController : Controller
     {
         private DomainRegisterContext db = new DomainRegisterContext();
 
-        // GET: Handlers
+        // GET: Companies
         public async Task<ActionResult> Index()
         {
-            return View(await db.Handlers.ToListAsync());
+            var companies = db.Companies.Include(c => c.Handler);
+            return View(await companies.ToListAsync());
         }
 
-        // GET: Handlers/Details/5
+        // GET: Companies/Details/5
         public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Handler handler = await db.Handlers.FindAsync(id);
-            if (handler == null)
+            Company company = await db.Companies.FindAsync(id);
+            if (company == null)
             {
                 return HttpNotFound();
             }
-            return View(handler);
+            return View(company);
         }
 
-        // GET: Handlers/Create
+        // GET: Companies/Create
         public ActionResult Create()
         {
+            ViewBag.HandlerId = new SelectList(db.Handlers, "HandlerId", "FirstName");
             return View();
         }
 
-        // POST: Handlers/Create
+        // POST: Companies/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "HandlerId,FirstName,LastName,Email")] Handler handler)
+        public async Task<ActionResult> Create([Bind(Include = "CompanyId,CompanyName,HandlerId")] Company company)
         {
             if (ModelState.IsValid)
             {
-                db.Handlers.Add(handler);
+                db.Companies.Add(company);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
-            return View(handler);
+            ViewBag.HandlerId = new SelectList(db.Handlers, "HandlerId", "FirstName", company.HandlerId);
+            return View(company);
         }
 
-        // GET: Handlers/Edit/5
+        // GET: Companies/Edit/5
         public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Handler handler = await db.Handlers.FindAsync(id);
-            if (handler == null)
+            Company company = await db.Companies.FindAsync(id);
+            if (company == null)
             {
                 return HttpNotFound();
             }
-            return View(handler);
+            ViewBag.HandlerId = new SelectList(db.Handlers, "HandlerId", "FirstName", company.HandlerId);
+            return View(company);
         }
 
-        // POST: Handlers/Edit/5
+        // POST: Companies/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "HandlerId,FirstName,LastName,Email")] Handler handler)
+        public async Task<ActionResult> Edit([Bind(Include = "CompanyId,CompanyName,HandlerId")] Company company)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(handler).State = EntityState.Modified;
+                db.Entry(company).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(handler);
+            ViewBag.HandlerId = new SelectList(db.Handlers, "HandlerId", "FirstName", company.HandlerId);
+            return View(company);
         }
 
-        // GET: Handlers/Delete/5
+        // GET: Companies/Delete/5
         public async Task<ActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Handler handler = await db.Handlers.FindAsync(id);
-            if (handler == null)
+            Company company = await db.Companies.FindAsync(id);
+            if (company == null)
             {
                 return HttpNotFound();
             }
-            return View(handler);
+            return View(company);
         }
 
-        // POST: Handlers/Delete/5
+        // POST: Companies/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Handler handler = await db.Handlers.FindAsync(id);
-            db.Handlers.Remove(handler);
+            Company company = await db.Companies.FindAsync(id);
+            db.Companies.Remove(company);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }

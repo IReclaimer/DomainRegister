@@ -17,24 +17,20 @@ namespace DomainRegisterMailer.Models
         }
 
         public DbSet<Domain> Domains { get; set; }
+        public DbSet<Company> Companies { get; set; }
         public DbSet<Handler> Handlers { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Handler>().Property(p => p.FirstName)
-                .HasMaxLength(30)
+                .HasMaxLength(15)
                 .IsRequired()
                 .HasUniqueIndexAnnotation("UQ_Handler_FullName", 0);
 
             modelBuilder.Entity<Handler>().Property(p => p.LastName)
-                .HasMaxLength(30)
+                .HasMaxLength(15)
                 .IsRequired()
                 .HasUniqueIndexAnnotation("UQ_Handler_FullName", 1);
-
-            modelBuilder.Entity<Handler>().Property(p => p.Email)
-                .HasMaxLength(50)
-                .IsRequired()
-                .HasColumnAnnotation("DataType", DataType.EmailAddress);
 
             base.OnModelCreating(modelBuilder);
         }

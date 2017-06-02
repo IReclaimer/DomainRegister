@@ -145,9 +145,12 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\CompaniesController.cs" />
     <Compile Include="Controllers\DomainsController.cs" />
     <Compile Include="Controllers\HandlersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Models\Company.cs" />
+    <Compile Include="Models\DomainDBInitializer.cs" />
     <Compile Include="Models\DomainRegisterContext.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -156,6 +159,7 @@
     <Compile Include="Models\Handler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Extensions\TypeConfigurationExtensions.cs" />
+    <Compile Include="ViewModels\DomainRenewalViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -212,16 +216,21 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Handlers\Create.cshtml" />
-    <Content Include="Views\Handlers\Delete.cshtml" />
-    <Content Include="Views\Handlers\Details.cshtml" />
-    <Content Include="Views\Handlers\Edit.cshtml" />
-    <Content Include="Views\Handlers\Index.cshtml" />
     <Content Include="Views\Domains\Create.cshtml" />
     <Content Include="Views\Domains\Delete.cshtml" />
     <Content Include="Views\Domains\Details.cshtml" />
     <Content Include="Views\Domains\Edit.cshtml" />
     <Content Include="Views\Domains\Index.cshtml" />
+    <Content Include="Views\Companies\Create.cshtml" />
+    <Content Include="Views\Companies\Delete.cshtml" />
+    <Content Include="Views\Companies\Details.cshtml" />
+    <Content Include="Views\Companies\Edit.cshtml" />
+    <Content Include="Views\Companies\Index.cshtml" />
+    <Content Include="Views\Handlers\Create.cshtml" />
+    <Content Include="Views\Handlers\Delete.cshtml" />
+    <Content Include="Views\Handlers\Details.cshtml" />
+    <Content Include="Views\Handlers\Edit.cshtml" />
+    <Content Include="Views\Handlers\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

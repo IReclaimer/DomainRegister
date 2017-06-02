@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -10,14 +11,21 @@ namespace DomainRegisterMailer.Models
         // Primary key
         public int DomainId { get; set; }
 
-        public string Company { get; set; }
+        [Display(Name = "Domain Name")]
+        [MaxLength(50, ErrorMessage = "Domain name cannot be greater than 50 characters.")]
+        [Required]
         public string DomainName { get; set; }
+        [Display(Name = "Renewal Date")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        [Required]
         public DateTime RenewalDate { get; set; }
 
         // Foreign key
-        public int HandlerId { get; set; }
+        [Display(Name = "Company")]
+        public int CompanyId { get; set; }
 
         // Navigation property
-        public virtual Handler Handler { get; set; }
+        public virtual Company Company { get; set; }
     }
 }

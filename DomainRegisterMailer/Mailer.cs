@@ -35,14 +35,15 @@ namespace DomainRegisterMailer
             SecurePassword.MakeReadOnly();
         }
 
-        public void SendMail(List<DomainRenewalViewModel> domains)
+        public async Task SendMail(List<DomainRenewalViewModel> domains)
         {
+            List<Task> mailQueue = new List<Task>();
             ILookup<string, DomainRenewalViewModel> byHandler = domains.ToLookup(o => o.HandlerName);
             foreach (var handlerdomains in byHandler)
             {
                 string body = string.Format("<p>Dear {0},</p> {1}", handlerdomains.Key.ToString(), InitialBody);
-                string str = handlerdomains.Key.ToString();
                 string subject = InitialSubject;
+                string handlerEmailAddress = handlerdomains.First().HandlerEmail;
                 foreach (var domain in handlerdomains)
                 {
                     body += string.Format("<p>{0}, {1}, {2}</p>", domain.CompanyName, 
@@ -52,51 +53,50 @@ namespace DomainRegisterMailer
 
                 body += "<p>Thank you<p>";
 
-                MailMessage msg = new MailMessage();
-                msg.To.Add(new MailAddress(handlerdomains.First().HandlerEmail, handlerdomains.Key));
+                Task mailTask = Task.Run(() => ActuallySendMailAsync(handlerEmailAddress, handlerdomains.Key.ToString(), subject, body));
+                mailQueue.Add(mailTask);
+            }
+            Task.WaitAll(mailQueue.ToArray());
+        }
+
+        private async Task ActuallySendMailAsync(string mailTo, string mailName, string mailSubject, string mailBody)
+        {
+            using (MailMessage msg = new MailMessage())
+            {
+                msg.To.Add(new MailAddress(mailTo, mailName));
                 msg.From = From;
-                msg.Subject = subject;
+                msg.Subject = mailSubject;
                 msg.SubjectEncoding = Encoding.UTF8;
-                msg.Body = body;
+                msg.Body = mailBody;
                 msg.BodyEncoding = Encoding.UTF8;
                 msg.IsBodyHtml = true;
                 msg.ReplyToList.Add(ReplyTo);
 
-
-                SmtpClient smtpClient = new SmtpClient("smtp.office365.com", 587);
-                smtpClient.UseDefaultCredentials = false;
-                smtpClient.Credentials = new System.Net.NetworkCredential(
-                    "noreply-alerts@animoassociates.com", SecurePassword);
-                smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-                smtpClient.EnableSsl = true;
-                smtpClient.SendCompleted += new SendCompletedEventHandler(SendCompletedCallback);
-                smtpClient.SendAsync(msg, msg);
+                using (SmtpClient smtpClient = new SmtpClient("smtp.office365.com", 587))
+                {
+                    smtpClient.UseDefaultCredentials = false;
+                    smtpClient.Credentials = new System.Net.NetworkCredential(
+                        "noreply-alerts@animoassociates.com", SecurePassword);
+                    smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    smtpClient.EnableSsl = true;
+                    smtpClient.SendCompleted += new SendCompletedEventHandler(SendCompletedCallback);
+                    await smtpClient.SendMailAsync(msg);
+                }
             }
         }
 
         private static void SendCompletedCallback(object sender, AsyncCompletedEventArgs e)
         {
-            // Get the message we sent
-            MailMessage msg = (MailMessage)e.UserState;
-
-            if (e.Cancelled)
-            {
-                // TODO: Log cancelled email details
-                Console.WriteLine("Email Cancelled: {0}, {1}", msg.To, e.Cancelled);
-            }
             if (e.Error != null)
             {
-                logger.Log(LogLevel.Error, string.Format("Email Error: {0}, {1}", msg.To, e.Error));
-                Console.WriteLine("Email Error: {0}, {1}", msg.To, e.Error);
+                logger.Log(LogLevel.Error, string.Format("Email Error: {0}", e.Error));
+                Console.WriteLine("Email Error: {0}", e.Error);
             }
             else
             {
-                logger.Log(LogLevel.Info, string.Format("Email Success: {0}", msg.To));
-                Console.WriteLine("Email Success: {0}", msg.To);
+                logger.Log(LogLevel.Info, string.Format("Email Sent"));
+                Console.WriteLine("Email Sent");
             }
-
-            if (msg != null)
-                msg.Dispose();
         }
     }
 }

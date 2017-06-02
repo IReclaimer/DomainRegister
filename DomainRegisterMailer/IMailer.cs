@@ -8,6 +8,6 @@ namespace DomainRegisterMailer
 {
     interface IMailer
     {
-        void SendMail(List<DomainRenewalViewModel> domains);
+        Task SendMail(List<DomainRenewalViewModel> domains);
     }
 }
