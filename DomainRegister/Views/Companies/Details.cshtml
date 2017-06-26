@@ -10,20 +10,34 @@
     <h4>Company</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Handler.FirstName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Handler.FirstName)
-        </dd>
-
+        
         <dt>
             @Html.DisplayNameFor(model => model.CompanyName)
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.CompanyName)
+        </dd>
+
+        <dt>
+            File Handler
+        </dt>
+
+        <dd>
+            @Html.ActionLink(Model.Handler.FirstName + " " + Model.Handler.LastName,
+           "Details", "Handlers", new { id = Model.Handler.HandlerId }, null)
+        </dd>
+
+        <dt>
+            Domains
+        </dt>
+
+        <dd>
+            @foreach (var d in Model.Domains)
+            {
+               @Html.ActionLink(d.DomainName, "Details",
+               "Domains", new { id = d.DomainId }, null) <br />
+            }
         </dd>
 
     </dl>

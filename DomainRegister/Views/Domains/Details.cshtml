@@ -27,10 +27,29 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.RenewalDate)
+            File Handler
         </dt>
 
         <dd>
+            @Html.DisplayFor(model => model.Company.Handler.FirstName)
+            @Html.DisplayFor(model => model.Company.Handler.LastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RenewalDate)
+        </dt>
+
+        @{
+            int daysLeft = (Model.RenewalDate - DateTime.Today).Days;
+            string style = null;
+            if (daysLeft <= 60)
+            {
+                style = daysLeft <= 30 ?
+                    "color:red" : "color:darkorange";
+            }
+        }
+
+        <dd style="@style">
             @Html.DisplayFor(model => model.RenewalDate)
         </dd>
 

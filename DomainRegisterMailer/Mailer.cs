@@ -18,7 +18,7 @@ namespace DomainRegisterMailer
         string InitialSubject = "Domain Renewal: ";
         string InitialBody = "<p>The following domains are due to be renewed.</p>" +
             "<p>Please could you indicate whether the client would like them renewed.</p>" +
-            "<p>You may reply directly to this email; replies will be automatically sent to Andy Heeney.";
+            "<p>You may reply directly to this email; replies will be automatically sent to Andy Heeney.</p>";
         SecureString SecurePassword { get; }
 
         public Mailer()

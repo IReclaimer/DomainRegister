@@ -34,6 +34,18 @@
             @Html.DisplayFor(model => model.Email)
         </dd>
 
+        <dt>
+            @Html.DisplayNameFor(model => model.Companies)
+        </dt>
+
+        <dd>
+            @foreach (var c in Model.Companies)
+            {
+                @Html.ActionLink(c.CompanyName, "Details",
+               "Companies", new { id = c.CompanyId }, null) <br />
+            }
+        </dd>
+
     </dl>
 </div>
 <p>
