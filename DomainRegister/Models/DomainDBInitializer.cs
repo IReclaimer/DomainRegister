@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DomainRegister.Models;
 
 namespace DomainRegister
 {
-    class DomainDBInitializer : DropCreateDatabaseAlways<DomainRegisterContext>
+    class DomainDBInitializer : DropCreateDatabaseIfModelChanges<DomainRegisterContext>
     {
         protected override void Seed(DomainRegisterContext context)
         {
@@ -18,7 +15,7 @@ namespace DomainRegister
 
             defaultDomains.Add(new Domain()
             {
-                DomainName = "domain2",
+                DomainName = "domain1",
                 RenewalDate = DateTime.Now.AddDays(5)
             });
 
@@ -30,43 +27,43 @@ namespace DomainRegister
 
             defaultDomains.Add(new Domain()
             {
-                DomainName = "domain2",
+                DomainName = "domain3",
                 RenewalDate = DateTime.Now.AddDays(54)
             });
 
             defaultDomains.Add(new Domain()
             {
-                DomainName = "domain2",
+                DomainName = "domain4",
                 RenewalDate = DateTime.Now.AddDays(18)
             });
 
             defaultDomains.Add(new Domain()
             {
-                DomainName = "domain2",
+                DomainName = "domain5",
                 RenewalDate = DateTime.Now.AddDays(76)
             });
 
             defaultDomains.Add(new Domain()
             {
-                DomainName = "domain2",
+                DomainName = "domain6",
                 RenewalDate = DateTime.Now.AddDays(94)
             });
 
             defaultDomains.Add(new Domain()
             {
-                DomainName = "domain2",
+                DomainName = "domain7",
                 RenewalDate = DateTime.Now.AddDays(85)
             });
 
             defaultDomains.Add(new Domain()
             {
-                DomainName = "domain2",
-                RenewalDate = DateTime.Now.AddDays(164)
+                DomainName = "domain8",
+                RenewalDate = DateTime.Now.AddDays(46)
             });
 
             defaultDomains.Add(new Domain()
             {
-                DomainName = "domain2",
+                DomainName = "domain9",
                 RenewalDate = DateTime.Now.AddDays(124)
             });
 

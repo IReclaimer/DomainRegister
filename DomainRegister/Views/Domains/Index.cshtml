@@ -1,27 +1,29 @@
 ﻿@model IEnumerable<DomainRegister.Models.Domain>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Domains";
 }
 
-<h2>Index</h2>
+<h2>Domains</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New", "Create") <br />
+    <span style="color:darkorange;font-weight:bold;">Fewer than 60 days remaining</span><br />
+    <span style="color:red;font-weight:bold;">Fewer than 30 days remaining</span>
 </p>
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Company.CompanyName)
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Company.CompanyName).ToString(), "Index", new { sort = ViewBag.CompanySortParam })
         </th>
         <th>
             @Html.DisplayNameFor(model => model.DomainName)
         </th>
         <th>
-            File Handler
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Company.Handler).ToString(), "Index", new { sort = ViewBag.HandlerSortParam })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.RenewalDate)
+            @Html.ActionLink(Html.DisplayNameFor(model => model.RenewalDate).ToString(), "Index", new { sort = ViewBag.DateSortParam })
         </th>
         <th></th>
     </tr>
@@ -44,7 +46,7 @@
             if (daysLeft <= 60)
             {
                 style = daysLeft <= 30 ?
-                    "color:red" : "color:darkorange";
+                    "color:red;font-weight:bold;" : "color:darkorange;font-weight:bold;";
             }
         }
         <td style="@style">

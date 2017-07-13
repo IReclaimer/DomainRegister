@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Net;
-using System.Web;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using DomainRegister.Models;
 
@@ -16,9 +13,30 @@ namespace DomainRegister.Controllers
         private DomainRegisterContext db = new DomainRegisterContext();
 
         // GET: Handlers
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string sort)
         {
-            return View(await db.Handlers.ToListAsync());
+            ViewBag.FirstSortParam = String.IsNullOrEmpty(sort) ? "first_desc" : "";
+            ViewBag.LastSortParam = sort == "last" ? "last_desc" : "last";
+
+            var handlers = from h in db.Handlers select h;
+
+            switch (sort)
+            {
+                case "first_desc":
+                    handlers = handlers.OrderByDescending(h => h.FirstName);
+                    break;
+                case "last":
+                    handlers = handlers.OrderBy(h => h.LastName);
+                    break;
+                case "last_desc":
+                    handlers = handlers.OrderByDescending(h => h.LastName);
+                    break;
+                default:
+                    handlers = handlers.OrderBy(h => h.FirstName);
+                    break;
+            }
+
+            return View(await handlers.ToListAsync());
         }
 
         // GET: Handlers/Details/5
@@ -33,6 +51,9 @@ namespace DomainRegister.Controllers
             {
                 return HttpNotFound();
             }
+            if(TempData["handlerHasChildrenDeletionWarning"] != null)
+                ViewBag.DeletionWarning = TempData["handlerHasChildrenDeletionWarning"].ToString();
+
             return View(handler);
         }
 
@@ -101,6 +122,13 @@ namespace DomainRegister.Controllers
             if (handler == null)
             {
                 return HttpNotFound();
+            }
+            if (handler.Companies.Any())
+            {
+                TempData["handlerHasChildrenDeletionWarning"] = "This handler has companies, " +
+                    "please move these to another handler, or delete them seperately, before " +
+                    "attempting to delete this hander.";
+                return RedirectToAction("Details", new { id = id });
             }
             return View(handler);
         }

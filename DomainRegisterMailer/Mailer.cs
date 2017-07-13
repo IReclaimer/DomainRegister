@@ -35,9 +35,9 @@ namespace DomainRegisterMailer
             SecurePassword.MakeReadOnly();
         }
 
-        public async Task SendMail(List<DomainRenewalViewModel> domains)
+        public MailQueueResult SendMail(List<DomainRenewalViewModel> domains)
         {
-            List<Task> mailQueue = new List<Task>();
+            List<Task<MailMessage>> mailQueue = new List<Task<MailMessage>>();
             ILookup<string, DomainRenewalViewModel> byHandler = domains.ToLookup(o => o.HandlerName);
             foreach (var handlerdomains in byHandler)
             {
@@ -53,13 +53,41 @@ namespace DomainRegisterMailer
 
                 body += "<p>Thank you<p>";
 
-                Task mailTask = Task.Run(() => ActuallySendMailAsync(handlerEmailAddress, handlerdomains.Key.ToString(), subject, body));
+                Task<MailMessage> mailTask = Task.Run(() => SendMailAsync(handlerEmailAddress, 
+                    handlerdomains.Key.ToString(), subject, body));
                 mailQueue.Add(mailTask);
             }
-            Task.WaitAll(mailQueue.ToArray());
+            
+            bool errors = false;
+            bool timedOut = Task.WaitAll(mailQueue.ToArray(), new TimeSpan(0, 5, 0));
+            foreach (Task<MailMessage> t in mailQueue)
+            {
+                if (t.IsFaulted)
+                {
+                    errors = true;
+                    logger.Log(LogLevel.Error, string.Format("Error sending email to {0}. Error: {1}", 
+                        t.Result.To.ToString(), t.Exception.InnerExceptions.ToString()));
+                }
+                else
+                    logger.Log(LogLevel.Info, string.Format("Email sent successfully to {0}.", t.Result.To.ToString()));
+            }
+
+            if (errors)
+            {
+                if (timedOut)
+                    return MailQueueResult.ProcessedWithErrors;
+                else
+                    return MailQueueResult.TimedOutWithErrors;
+            }
+            else
+            {
+                if (!timedOut)
+                    return MailQueueResult.TimedOut;
+            }
+            return MailQueueResult.ProcessedSucessfully;
         }
 
-        private async Task ActuallySendMailAsync(string mailTo, string mailName, string mailSubject, string mailBody)
+        private async Task<MailMessage> SendMailAsync(string mailTo, string mailName, string mailSubject, string mailBody)
         {
             using (MailMessage msg = new MailMessage())
             {
@@ -79,23 +107,12 @@ namespace DomainRegisterMailer
                         "noreply-alerts@animoassociates.com", SecurePassword);
                     smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
                     smtpClient.EnableSsl = true;
-                    smtpClient.SendCompleted += new SendCompletedEventHandler(SendCompletedCallback);
-                    await smtpClient.SendMailAsync(msg);
-                }
-            }
-        }
 
-        private static void SendCompletedCallback(object sender, AsyncCompletedEventArgs e)
-        {
-            if (e.Error != null)
-            {
-                logger.Log(LogLevel.Error, string.Format("Email Error: {0}", e.Error));
-                Console.WriteLine("Email Error: {0}", e.Error);
-            }
-            else
-            {
-                logger.Log(LogLevel.Info, string.Format("Email Sent"));
-                Console.WriteLine("Email Sent");
+                    logger.Log(LogLevel.Info, string.Format("Sending email to: {0}.", msg.To.ToString()));
+
+                    await smtpClient.SendMailAsync(msg);
+                    return msg;
+                }
             }
         }
     }

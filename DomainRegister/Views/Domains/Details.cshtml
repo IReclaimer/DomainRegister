@@ -15,7 +15,8 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Company.CompanyName)
+            @Html.ActionLink(Model.Company.CompanyName, "Details",
+               "Companies", new { id = Model.Company.CompanyId }, null)
         </dd>
 
         <dt>
@@ -31,8 +32,9 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Company.Handler.FirstName)
-            @Html.DisplayFor(model => model.Company.Handler.LastName)
+            @Html.ActionLink(Model.Company.Handler.FirstName + " " + 
+           Model.Company.Handler.LastName, "Details", "Handlers",
+           new { id = Model.Company.Handler.HandlerId }, null)
         </dd>
 
         <dt>

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NLog;
-using DomainRegisterMailer.Models;
 using System.Diagnostics;
+using System.Linq;
+using DomainRegisterMailer.Models;
 using Nito.AsyncEx;
+using NLog;
 
 namespace DomainRegisterMailer
 {
@@ -20,18 +18,18 @@ namespace DomainRegisterMailer
 
             logger.Log(LogLevel.Info, string.Format("Program runtime: {0}",
                 (DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime()).ToString()));
-            Console.WriteLine(string.Format("Program runtime: {0}",
-                (DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime()).ToString()));
+            //Console.WriteLine(string.Format("Program runtime: {0}",
+            //    (DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime()).ToString()));
 
-            Console.ReadKey();
+            //Console.ReadKey();
         }
 
         static async void MainAsync(string[] args)
         {
-            await new Program().DoMail(new Mailer());
+            new Program().CheckForDomainRenewals(new Mailer());
         }
 
-        async Task DoMail(IMailer mailer)
+        void CheckForDomainRenewals(IMailer mailer)
         {
             List<DomainRenewalViewModel> domainsToBeRenewed = new List<DomainRenewalViewModel>();
             DateTime warningPeriod = DateTime.Now.AddDays(60);
@@ -53,14 +51,33 @@ namespace DomainRegisterMailer
 
             logger.Log(LogLevel.Info, string.Format("There are {0} domains to be renewed this week.",
                 domainsToBeRenewed.Count.ToString()));
-            Console.WriteLine(string.Format("There are {0} domains to be renewed this week.",
-                domainsToBeRenewed.Count.ToString()));
+            //Console.WriteLine(string.Format("There are {0} domains to be renewed this week.",
+            //    domainsToBeRenewed.Count.ToString()));
+
+            MailQueueResult mailResult = MailQueueResult.ProcessedSucessfully;
 
             if (domainsToBeRenewed.Count > 0)
-                await mailer.SendMail(domainsToBeRenewed);
+                mailResult = mailer.SendMail(domainsToBeRenewed);
 
-            logger.Log(LogLevel.Info, "All mail sent!");
-            Console.WriteLine("All mail sent!");
+            switch (mailResult)
+            {
+                case MailQueueResult.TimedOut:
+                    logger.Log(LogLevel.Error, "The mail queue timed out before completing.");
+                    break;
+                case MailQueueResult.TimedOutWithErrors:
+                    logger.Log(LogLevel.Error, "The mail queue timed out before completing. " +
+                        "Errors were encountered during the processing.");
+                    break;
+                case MailQueueResult.ProcessedWithErrors:
+                    logger.Log(LogLevel.Error, "The mail queue completed processing with errors.");
+                    break;
+                default:
+                    logger.Log(LogLevel.Info, "The mail queue completed processing sucessfully.");
+                    break;
+            }
+
+            //logger.Log(LogLevel.Info, "All mail sent!");
+            //Console.WriteLine("All mail sent!");
         }
     }
 }

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 
 namespace DomainRegister.Models
 {
@@ -17,7 +14,7 @@ namespace DomainRegister.Models
         public string CompanyName { get; set; }
 
         // Foreign Key
-        [Display(Name = "Handler")]
+        [Display(Name = "File Handler")]
         public int HandlerId { get; set; }
 
         // Navigation property

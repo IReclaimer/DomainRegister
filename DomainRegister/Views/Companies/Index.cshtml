@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<DomainRegister.Models.Company>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Client Companies";
 }
 
-<h2>Index</h2>
+<h2>Client Companies</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
@@ -12,10 +12,10 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.CompanyName)
+            @Html.ActionLink(Html.DisplayNameFor(model => model.CompanyName).ToString(), "Index", new { sort = ViewBag.CompanySortParam })
         </th>
         <th>
-            File Handler
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Handler).ToString(), "Index", new { sort = ViewBag.HandlerSortParam })
         </th>
         <th>
             Domains

@@ -16,9 +16,36 @@ namespace DomainRegister.Controllers
         private DomainRegisterContext db = new DomainRegisterContext();
 
         // GET: Domains
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string sort)
         {
-            var domains = db.Domains.Include(d => d.Company);
+            ViewBag.DateSortParam = String.IsNullOrEmpty(sort) ? "date_desc" : "";
+            ViewBag.CompanySortParam = sort == "company" ? "company_desc" : "company";
+            ViewBag.HandlerSortParam = sort == "handler" ? "handler_desc" : "handler";
+
+            var domains = db.Domains.Include(d => d.Company).Include(c => c.Company.Handler);
+
+            switch (sort)
+            {
+                case "date_desc":
+                    domains = domains.OrderByDescending(d => d.RenewalDate);
+                    break;
+                case "company":
+                    domains = domains.OrderBy(d => d.Company.CompanyName);
+                    break;
+                case "company_desc":
+                    domains = domains.OrderByDescending(d => d.Company.CompanyName);
+                    break;
+                case "handler":
+                    domains = domains.OrderBy(d => d.Company.Handler.FirstName);
+                    break;
+                case "handler_desc":
+                    domains = domains.OrderByDescending(d => d.Company.Handler.FirstName);
+                    break;
+                default:
+                    domains = domains.OrderBy(d => d.RenewalDate);
+                    break;
+            }
+
             return View(await domains.ToListAsync());
         }
 

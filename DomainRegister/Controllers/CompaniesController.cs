@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Net;
-using System.Web;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using DomainRegister.Models;
 
@@ -16,9 +13,30 @@ namespace DomainRegister.Controllers
         private DomainRegisterContext db = new DomainRegisterContext();
 
         // GET: Companies
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string sort)
         {
-            var companies = db.Companies.Include(c => c.Handler);
+            ViewBag.CompanySortParam = String.IsNullOrEmpty(sort) ? "company_desc" : "";
+            ViewBag.HandlerSortParam = sort == "handler" ? "handler_desc" : "handler";
+
+            //var companies = db.Companies.Include(c => c.Handler);
+            var companies = (from c in db.Companies select c).Include(c => c.Handler);
+
+            switch (sort)
+            {
+                case "company_desc":
+                    companies = companies.OrderByDescending(c => c.CompanyName);
+                    break;
+                case "handler":
+                    companies = companies.OrderBy(c => c.Handler.FirstName);
+                    break;
+                case "handler_desc":
+                    companies = companies.OrderByDescending(c => c.Handler.FirstName);
+                    break;
+                default:
+                    companies = companies.OrderBy(c => c.CompanyName);
+                    break;
+            }
+
             return View(await companies.ToListAsync());
         }
 
