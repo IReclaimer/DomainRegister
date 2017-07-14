@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Net;
-using System.Web;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using DomainRegister.Models;
+using X.PagedList;
 
 namespace DomainRegister.Controllers
 {
@@ -16,13 +15,27 @@ namespace DomainRegister.Controllers
         private DomainRegisterContext db = new DomainRegisterContext();
 
         // GET: Domains
-        public async Task<ActionResult> Index(string sort)
+        public async Task<ActionResult> Index(string sort, string currentSearch, string search, int? page)
         {
+            ViewBag.CurrentSort = sort;
             ViewBag.DateSortParam = String.IsNullOrEmpty(sort) ? "date_desc" : "";
             ViewBag.CompanySortParam = sort == "company" ? "company_desc" : "company";
             ViewBag.HandlerSortParam = sort == "handler" ? "handler_desc" : "handler";
 
+            if (search != null)
+                page = 1;
+            else
+                search = currentSearch;
+
+            ViewBag.CurrentSearch = search;
+
             var domains = db.Domains.Include(d => d.Company).Include(c => c.Company.Handler);
+
+            if (!String.IsNullOrEmpty(search))
+            {
+                domains = domains.Where(d => d.DomainName.Contains(search) ||
+                d.Company.CompanyName.Contains(search));
+            }
 
             switch (sort)
             {
@@ -46,7 +59,10 @@ namespace DomainRegister.Controllers
                     break;
             }
 
-            return View(await domains.ToListAsync());
+            int pageSize = 20;
+            int pageNumber = (page ?? 1);
+            ViewBag.CurrentPagedList = await domains.ToPagedListAsync(pageNumber, pageSize);
+            return View(ViewBag.CurrentPagedList);
         }
 
         // GET: Domains/Details/5

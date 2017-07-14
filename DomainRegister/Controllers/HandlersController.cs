@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using DomainRegister.Models;
+using X.PagedList;
 
 namespace DomainRegister.Controllers
 {
@@ -13,7 +14,7 @@ namespace DomainRegister.Controllers
         private DomainRegisterContext db = new DomainRegisterContext();
 
         // GET: Handlers
-        public async Task<ActionResult> Index(string sort)
+        public async Task<ActionResult> Index(string sort, int? page)
         {
             ViewBag.FirstSortParam = String.IsNullOrEmpty(sort) ? "first_desc" : "";
             ViewBag.LastSortParam = sort == "last" ? "last_desc" : "last";
@@ -36,7 +37,10 @@ namespace DomainRegister.Controllers
                     break;
             }
 
-            return View(await handlers.ToListAsync());
+            int pageSize = 20;
+            int pageNumber = (page ?? 1);
+            ViewBag.CurrentPagedList = await handlers.ToPagedListAsync(pageNumber, pageSize);
+            return View(ViewBag.CurrentPagedList);
         }
 
         // GET: Handlers/Details/5

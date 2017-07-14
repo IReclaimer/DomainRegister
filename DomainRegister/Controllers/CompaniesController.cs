@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using DomainRegister.Models;
+using X.PagedList;
 
 namespace DomainRegister.Controllers
 {
@@ -13,13 +14,23 @@ namespace DomainRegister.Controllers
         private DomainRegisterContext db = new DomainRegisterContext();
 
         // GET: Companies
-        public async Task<ActionResult> Index(string sort)
+        public async Task<ActionResult> Index(string sort, string currentSearch, string search, int? page)
         {
+            ViewBag.CurrentSort = sort;
             ViewBag.CompanySortParam = String.IsNullOrEmpty(sort) ? "company_desc" : "";
             ViewBag.HandlerSortParam = sort == "handler" ? "handler_desc" : "handler";
 
-            //var companies = db.Companies.Include(c => c.Handler);
+            if(search != null)
+                page = 1;
+            else
+                search = currentSearch;
+
+            ViewBag.CurrentSearch = search;
+
             var companies = (from c in db.Companies select c).Include(c => c.Handler);
+
+            if (!String.IsNullOrEmpty(search))
+                companies = companies.Where(c => c.CompanyName.Contains(search));
 
             switch (sort)
             {
@@ -37,7 +48,10 @@ namespace DomainRegister.Controllers
                     break;
             }
 
-            return View(await companies.ToListAsync());
+            int pageSize = 20;
+            int pageNumber = (page ?? 1);
+            ViewBag.CurrentPagedList = await companies.ToPagedListAsync(pageNumber, pageSize);
+            return View(ViewBag.CurrentPagedList);
         }
 
         // GET: Companies/Details/5

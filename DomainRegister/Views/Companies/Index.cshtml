@@ -4,10 +4,16 @@
     ViewBag.Title = "Client Companies";
 }
 
+@using X.PagedList.Mvc;
+@using X.PagedList;
+
 <h2>Client Companies</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New", "Create") <br />
+    Filter by company name:
+    @Html.TextBox("Search")
+    <input type="submit" value="Search" />
 </p>
 <table class="table">
     <tr>
@@ -44,3 +50,5 @@
 }
 
 </table>
+<br />
+@Html.PagedListPager((IPagedList)ViewBag.CurrentPagedList, page => Url.Action("Index", new { page }))

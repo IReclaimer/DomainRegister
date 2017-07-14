@@ -3,14 +3,31 @@
 @{
     ViewBag.Title = "Domains";
 }
+@using X.PagedList.Mvc;
+@using X.PagedList;
 
 <h2>Domains</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create") <br />
-    <span style="color:darkorange;font-weight:bold;">Fewer than 60 days remaining</span><br />
-    <span style="color:red;font-weight:bold;">Fewer than 30 days remaining</span>
-</p>
+@Html.ActionLink("Create New", "Create") <br />
+<div class="row">
+    <div class="col-md-8">
+        <div class="form-group">
+            <div class="control-label col-md-4">
+                Filter by domain or company name:
+            </div>
+            <div class="col-md-8">
+                @Html.TextBox("Search")
+                <input type="submit" value="Search" />
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="pull-right">
+            <span style="color:darkorange;font-weight:bold;">Fewer than 60 days remaining</span><br />
+            <span style="color:red;font-weight:bold;">Fewer than 30 days remaining</span>
+        </div>
+    </div>
+</div>
 <table class="table">
     <tr>
         <th>
@@ -61,3 +78,5 @@
 }
 
 </table>
+<br />
+@Html.PagedListPager((IPagedList)ViewBag.CurrentPagedList, page => Url.Action("Index", new { page }))

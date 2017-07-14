@@ -3,6 +3,8 @@
 @{
     ViewBag.Title = "File Handlers";
 }
+@using X.PagedList.Mvc;
+@using X.PagedList;
 
 <h2>File Handlers</h2>
 
@@ -62,3 +64,5 @@
 }
 
 </table>
+<br />
+@Html.PagedListPager((IPagedList)ViewBag.CurrentPagedList, page => Url.Action("Index", new { page }))
