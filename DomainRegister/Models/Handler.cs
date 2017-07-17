@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace DomainRegister.Models
 {
-    public class Handler
+    public class Handler : ISoftDelete
     {
         // Primary key
         public int HandlerId { get; set; }
@@ -21,6 +22,15 @@ namespace DomainRegister.Models
             ErrorMessage = "Not a valid email address.")]
         [Required]
         public string Email { get; set; }
+
+        //ISoftDelete implementation
+        [ScaffoldColumn(false)]
+        public Boolean IsDeleted { get; set; }
+        [ScaffoldColumn(false)]
+        [Display(Name = "Date Deleted")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        public DateTime? DeletedDate { get; set; }
 
         // Navigation property
         public virtual ICollection<Company> Companies { get; set; }

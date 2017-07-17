@@ -169,6 +169,7 @@
     </Compile>
     <Compile Include="Models\Domain.cs" />
     <Compile Include="Models\Handler.cs" />
+    <Compile Include="Models\ISoftDelete.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Extensions\TypeConfigurationExtensions.cs" />
     <Compile Include="ViewModels\DomainRenewalViewModel.cs" />
