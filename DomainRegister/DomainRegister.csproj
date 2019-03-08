@@ -20,8 +20,8 @@
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort>44343</IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>enabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
@@ -163,10 +163,13 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AuditLogsController.cs" />
     <Compile Include="Controllers\CompaniesController.cs" />
     <Compile Include="Controllers\DomainsController.cs" />
     <Compile Include="Controllers\HandlersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="BusinessLogic\AuditTrail.cs" />
+    <Compile Include="Models\AuditLog.cs" />
     <Compile Include="Models\Company.cs" />
     <Compile Include="Models\DomainDBInitializer.cs" />
     <Compile Include="Models\DomainRegisterContext.cs" />
@@ -276,6 +279,11 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
+    <Content Include="Views\AuditLogs\Create.cshtml" />
+    <Content Include="Views\AuditLogs\Delete.cshtml" />
+    <Content Include="Views\AuditLogs\Details.cshtml" />
+    <Content Include="Views\AuditLogs\Edit.cshtml" />
+    <Content Include="Views\AuditLogs\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

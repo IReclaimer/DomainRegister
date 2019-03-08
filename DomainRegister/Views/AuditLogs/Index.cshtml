@@ -1,0 +1,75 @@
+﻿@model IEnumerable<DomainRegister.Models.AuditLog>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Action)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TableName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ColumnPrimaryKey)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ColumnName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OldValue)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NewValue)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ModifiedDateTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UserID)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Action)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TableName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ColumnPrimaryKey)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ColumnName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OldValue)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NewValue)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ModifiedDateTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UserID)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.AuditLogID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.AuditLogID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.AuditLogID })
+        </td>
+    </tr>
+}
+
+</table>
